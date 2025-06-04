@@ -36,7 +36,6 @@
     button:hover {
       background-color: #cc0000;
     }
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -45,19 +44,13 @@
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
       background-color: rgba(0,0,0,0.8);
     }
     .modal-content {
       position: relative;
-      margin: 10% auto;
-      padding: 0;
+      margin: 5% auto;
       width: 80%;
       max-width: 800px;
-    }
-    .modal iframe {
-      width: 100%;
-      height: 450px;
     }
     .close {
       color: white;
@@ -67,6 +60,10 @@
       font-size: 30px;
       font-weight: bold;
       cursor: pointer;
+    }
+    #player {
+      width: 100%;
+      height: 450px;
     }
   </style>
 </head>
@@ -87,33 +84,68 @@
   <div id="videoModal" class="modal">
     <div class="modal-content">
       <span class="close" id="closeModalBtn">&times;</span>
-      <iframe id="youtubeVideo" src="" frameborder="0" allowfullscreen></iframe>
+      <div id="player"></div>
     </div>
   </div>
 
+  <!-- Load YouTube Iframe API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
-    const modal = document.getElementById("videoModal");
-    const btn = document.getElementById("openModalBtn");
-    const span = document.getElementById("closeModalBtn");
-    const iframe = document.getElementById("youtubeVideo");
+    let player;
+    let modal = document.getElementById("videoModal");
+    let openBtn = document.getElementById("openModalBtn");
+    let closeBtn = document.getElementById("closeModalBtn");
 
-    const videoURL = "https://www.youtube.com/embed/Wabfdkos0Sg?autoplay=1";
-
-    btn.onclick = function() {
-      iframe.src = videoURL;
-      modal.style.display = "block";
+    // YouTube Iframe API will call this function when ready
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: 'Wabfdkos0Sg',
+        events: {
+          'onStateChange': onPlayerStateChange
+        },
+        playerVars: {
+          autoplay: 0,
+          controls: 1
+        }
+      });
     }
 
-    span.onclick = function() {
-      modal.style.display = "none";
-      iframe.src = "";
-    }
-
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-        iframe.src = "";
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        gtag('event', 'youtube_play', {
+          video_id: 'Wabfdkos0Sg',
+          video_title: 'Opsi YouTube Demo'
+        });
+      } else if (event.data == YT.PlayerState.PAUSED) {
+        gtag('event', 'youtube_pause', {
+          video_id: 'Wabfdkos0Sg',
+          video_title: 'Opsi YouTube Demo'
+        });
+      } else if (event.data == YT.PlayerState.ENDED) {
+        gtag('event', 'youtube_ended', {
+          video_id: 'Wabfdkos0Sg',
+          video_title: 'Opsi YouTube Demo'
+        });
       }
+    }
+
+    openBtn.onclick = function () {
+      modal.style.display = "block";
+      player.playVideo();
+      gtag('event', 'youtube_modal_opened', {
+        video_id: 'Wabfdkos0Sg'
+      });
+    }
+
+    closeBtn.onclick = closeModal;
+    window.onclick = function(event) {
+      if (event.target == modal) closeModal();
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      player.stopVideo();
     }
   </script>
 
