@@ -1,3 +1,121 @@
-<html> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Opsi YouTube Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Google Tag Manager -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PG532ZC5');
+  </script>
+  <!-- End Google Tag Manager -->
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #FF0000;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #cc0000;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      position: relative;
+      margin: 10% auto;
+      padding: 0;
+      width: 80%;
+      max-width: 800px;
+    }
+    .modal iframe {
+      width: 100%;
+      height: 450px;
+    }
+    .close {
+      color: white;
+      position: absolute;
+      top: -30px;
+      right: 0;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG532ZC5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <h1>Opsi YouTube Demo</h1>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+  <button id="openModalBtn">Watch YouTube Video</button>
+
+  <!-- Modal -->
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModalBtn">&times;</span>
+      <iframe id="youtubeVideo" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("videoModal");
+    const btn = document.getElementById("openModalBtn");
+    const span = document.getElementById("closeModalBtn");
+    const iframe = document.getElementById("youtubeVideo");
+
+    const videoURL = "https://www.youtube.com/embed/Wabfdkos0Sg?autoplay=1";
+
+    btn.onclick = function() {
+      iframe.src = videoURL;
+      modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+      modal.style.display = "none";
+      iframe.src = "";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        iframe.src = "";
+      }
+    }
+  </script>
+
+</body>
 </html>
