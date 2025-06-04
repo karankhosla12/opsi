@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Opsi YouTube Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Google Tag Manager -->
   <script>
@@ -16,138 +16,123 @@
   <!-- End Google Tag Manager -->
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      color: #333;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #FF0000;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #cc0000;
-    }
-    .modal {
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+    #myModal {
       display: none;
       position: fixed;
       z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
       background-color: rgba(0,0,0,0.8);
     }
-    .modal-content {
+    #modalContent {
       position: relative;
-      margin: 5% auto;
-      width: 80%;
-      max-width: 800px;
+      margin: 10% auto;
+      background: #fff;
+      padding: 20px;
+      width: 90%;
+      max-width: 640px;
     }
     .close {
-      color: white;
       position: absolute;
-      top: -30px;
-      right: 0;
-      font-size: 30px;
+      top: 10px; right: 15px;
+      font-size: 28px;
       font-weight: bold;
       cursor: pointer;
     }
-    #player {
-      width: 100%;
-      height: 450px;
-    }
   </style>
 </head>
-<body>
 
+<body>
   <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PG532ZC5"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe>
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
   </noscript>
   <!-- End Google Tag Manager (noscript) -->
 
   <h1>Opsi YouTube Demo</h1>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-  <button id="openModalBtn">Watch YouTube Video</button>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae suscipit lorem.</p>
+  <button id="openModal">Watch YouTube Video</button>
 
-  <!-- Modal -->
-  <div id="videoModal" class="modal">
-    <div class="modal-content">
-      <span class="close" id="closeModalBtn">&times;</span>
+  <div id="myModal">
+    <div id="modalContent">
+      <span class="close">&times;</span>
       <div id="player"></div>
     </div>
   </div>
 
-  <!-- Load YouTube Iframe API -->
+  <!-- YouTube Player API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
     let player;
-    let modal = document.getElementById("videoModal");
-    let openBtn = document.getElementById("openModalBtn");
-    let closeBtn = document.getElementById("closeModalBtn");
 
-    // YouTube Iframe API will call this function when ready
+    // Load player when API is ready
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
+        height: '360',
+        width: '640',
         videoId: 'Wabfdkos0Sg',
         events: {
           'onStateChange': onPlayerStateChange
-        },
-        playerVars: {
-          autoplay: 0,
-          controls: 1
         }
       });
     }
 
+    // Track events using dataLayer.push()
     function onPlayerStateChange(event) {
-      if (event.data == YT.PlayerState.PLAYING) {
-        gtag('event', 'youtube_play', {
-          video_id: 'Wabfdkos0Sg',
-          video_title: 'Opsi YouTube Demo'
-        });
-      } else if (event.data == YT.PlayerState.PAUSED) {
-        gtag('event', 'youtube_pause', {
-          video_id: 'Wabfdkos0Sg',
-          video_title: 'Opsi YouTube Demo'
-        });
-      } else if (event.data == YT.PlayerState.ENDED) {
-        gtag('event', 'youtube_ended', {
-          video_id: 'Wabfdkos0Sg',
-          video_title: 'Opsi YouTube Demo'
-        });
+      const videoData = {
+        event: '',
+        video_id: 'Wabfdkos0Sg',
+        video_title: 'Opsi YouTube Demo'
+      };
+
+      switch (event.data) {
+        case YT.PlayerState.PLAYING:
+          videoData.event = 'youtube_play';
+          break;
+        case YT.PlayerState.PAUSED:
+          videoData.event = 'youtube_pause';
+          break;
+        case YT.PlayerState.ENDED:
+          videoData.event = 'youtube_ended';
+          break;
+        default:
+          return;
       }
+
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(videoData);
     }
 
-    openBtn.onclick = function () {
-      modal.style.display = "block";
-      player.playVideo();
-      gtag('event', 'youtube_modal_opened', {
-        video_id: 'Wabfdkos0Sg'
+    // Modal logic
+    const modal = document.getElementById('myModal');
+    const btn = document.getElementById('openModal');
+    const span = document.getElementsByClassName('close')[0];
+
+    btn.onclick = function () {
+      modal.style.display = 'block';
+      // Push modal open event
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'youtube_modal_opened',
+        video_id: 'Wabfdkos0Sg',
+        video_title: 'Opsi YouTube Demo'
       });
-    }
+    };
 
-    closeBtn.onclick = closeModal;
-    window.onclick = function(event) {
-      if (event.target == modal) closeModal();
-    }
+    span.onclick = function () {
+      modal.style.display = 'none';
+      if (player && player.stopVideo) player.stopVideo();
+    };
 
-    function closeModal() {
-      modal.style.display = "none";
-      player.stopVideo();
-    }
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+        if (player && player.stopVideo) player.stopVideo();
+      }
+    };
   </script>
-
 </body>
 </html>
